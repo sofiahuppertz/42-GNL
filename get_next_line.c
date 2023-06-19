@@ -22,7 +22,7 @@ char	*get_next_line(int fd)
 	int			bytesCount;
 
 	//PRIOR CHECKING
-	if (!fd || BUFFER_SIZE <= 0 || flagFile == 2)
+	if (fd == NULL || BUFFER_SIZE <= 0 || flagFile == 2)
 	{
 		return (NULL);
 	}
@@ -96,3 +96,4 @@ int	free_list(t_node **head)
 	*head = NULL;
 	return (0);
 }
+
