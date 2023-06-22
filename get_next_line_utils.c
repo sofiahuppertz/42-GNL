@@ -1,31 +1,34 @@
 #include "get_next_line.h"
 
-int	checkForNewLine(char *buffer, t_node **head)
+int	check_for_newline(char *buffer, t_node **head)
 {
 	int		bit_idx;
 	char	*temp;
 
-	//iterate through the buffer until new line, counting bit_idx.
+	if (buffer == NULL)
+	{
+		return (1);
+	}
 	bit_idx = 0;
 	temp = NULL;
 	while (bit_idx < BUFFER_SIZE && buffer[bit_idx] != '\0')
 	{
 		if (buffer[bit_idx] == '\n')
 		{
-			temp = extractFromBuffer(buffer, bit_idx + 1);
+			temp = extract_from_buffer(buffer, bit_idx + 1);
 			add_last_node(head, temp, bit_idx + 1);
 			free(temp);
 			return (1);
 		}
 		bit_idx++;
 	}
-	temp = extractFromBuffer(buffer, bit_idx);
+	temp = extract_from_buffer(buffer, bit_idx);
 	add_last_node(head, temp, bit_idx);
 	free(temp);
 	return (0);
 }
 
-char	*extractFromBuffer(char *buffer, int size)
+char	*extract_from_buffer(char *buffer, int size)
 {
 	char	*extracted_string;
 	char	temp;
@@ -34,31 +37,35 @@ char	*extractFromBuffer(char *buffer, int size)
 
 	temp = 0;
 	extracted_string = malloc(sizeof(char) * (size + 1));
-	i = 0;
-	while (i < size)
+	i = -1;
+	while (++i < size)
 	{
 		extracted_string[i] = buffer[i];
-		i++;
 	}
 	extracted_string[i] = '\0';
 	j = 0;
 	while (i < BUFFER_SIZE && buffer[i] != '\0')
 	{
-		temp = buffer[i];
-		buffer[j] = temp;
-		i++;
-		j++;
+		temp = buffer[i++];
+		buffer[j++] = temp;
 	}
-	buffer[j] = '\0';
+	while (j < BUFFER_SIZE)
+	{
+		buffer[j++] = '\0';
+	}
 	return (extracted_string);
 }
 
-int	getLengthOfLine(t_node **head)
+int	get_line_length(t_node **head)
 {
 	int		bytes_count;
 	t_node	*ptr;
 	int		i;
 
+	if (*head == NULL)
+	{
+		return (-1);
+	}
 	bytes_count = 1;
 	ptr = *head;
 	i = 0;
@@ -76,7 +83,7 @@ int	getLengthOfLine(t_node **head)
 	return (bytes_count);
 }
 
-char	*copyLine(t_node **head, int size)
+char	*copy_line(t_node **head, int size)
 {
 	char	*new_line;
 	t_node	*ptr;
@@ -88,10 +95,7 @@ char	*copyLine(t_node **head, int size)
 		return (NULL);
 	i = 0;
 	while (i < (size + 1))
-	{
-		new_line[i] = '\0';
-		i++;
-	}
+		new_line[i++] = '\0';
 	ptr = *head;
 	i = 0;
 	j = 0;
@@ -99,9 +103,7 @@ char	*copyLine(t_node **head, int size)
 	{
 		while (ptr->data[i] != '\0')
 		{
-			new_line[j] = ptr->data[i];
-			i++;
-			j++;
+			new_line[j++] = ptr->data[i++];
 		}
 		ptr = ptr->next;
 		i = 0;
@@ -136,4 +138,3 @@ int	add_last_node(t_node **head, char *data, int size)
 	}
 	return (0);
 }
-
