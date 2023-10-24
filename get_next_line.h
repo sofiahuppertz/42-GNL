@@ -25,13 +25,12 @@ typedef struct node_t
 	struct node_t	*next;
 }					t_node;
 
-int					add_last_node(t_node **head, char *data, int size);
-int					check_for_newline(char *buffer, t_node **head);
-char				*copy_line(t_node **head, int size);
-char				*extract_from_buffer(char *buffer, int size);
-int					free_list(t_node *head);
-char				*ft_strcpy(char *dest, char *src);
-int					get_line_length(t_node **head);
+void 				add_last_node(t_node **head, char **string);
+void				free_list(t_node *head);
+int 				check_for_newline(char *buffer, t_node **head);
+int 				get_line_length(t_node *lines);
+char 				*copy_line(t_node *lines, int len);
+char 				*extract_from_buffer(char *buffer, int len);
 char				*get_next_line(int fd);
 
 # endif

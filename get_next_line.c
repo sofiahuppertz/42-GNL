@@ -14,78 +14,85 @@
 
 char	*get_next_line(int fd)
 {
-	char		*newline;
-	static char	_buff[BUFFER_SIZE];
-	t_node		*lines;
-	int			flag_line;
-	int			count;
+	static char	buffer[BUFFER_SIZE];
+	char		*result = NULL;
+	t_node		*lines = NULL;
+	int			flag = 0;
+	int			len = 0;
 
 	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, 0, 0) < 0)
-	{
 		return (NULL);
-	}
-	flag_line = 0;
+	flag = 0;
 	lines = NULL;
-	if (_buff[0])
+	if (buffer[0] && check_for_newline(buffer, &lines))
+		flag = 1;
+	while (flag != 1)
 	{
-		if (check_for_newline(_buff, &lines))
-			flag_line = 1;
-	}
-	while (flag_line != 1)
-	{
-		if (!(read(fd, _buff, BUFFER_SIZE)))
+		if (!(read(fd, buffer, BUFFER_SIZE)))
 		{
-			flag_line = 1;
+			flag = 1;
 			if (!lines)
-			{
 				return (NULL);
-			}
 		}
-		if (check_for_newline(_buff, &lines))
-		{
-			flag_line = 1;
-		}
+		if (check_for_newline(buffer, &lines))
+			flag = 1;
 	}
-	count = get_line_length(&lines);
-	if (count < 0)
+	len = get_line_length(lines);
+	if (len < 0)
 	{
 		return (NULL);
 	}
-	newline = copy_line(&lines, count);
+	result = copy_line(lines, len);
 	free_list(lines);
-	return (newline);
+	return (result);
 }
 
-int	free_list(t_node *head)
+int check_for_newline(char *buffer, t_node **head)
 {
-	t_node	*current;
-	char	*temp;
+    char *line = NULL;
+    int index = 0;
+    int result = 0;
 
-	while (head != NULL)
-	{
-		current = head;
-		temp = current->data;
-		head = head->next;
-		free(temp);
-		free(current);
-	}
-	return (0);
+    if (!buffer)
+        return (1);
+    while (index < BUFFER_SIZE && buffer[index] != '\0')
+    {
+        if (buffer[index] == '\n')
+        {
+            index += 1;
+            result = 1;
+            break;
+        }
+        index += 1;
+    }
+    line = extract_from_buffer(buffer, index);
+    add_last_node(head, &line);
+    return (result);
 }
 
-char	*ft_strcpy(char *dest, char *src)
+char *extract_from_buffer(char *buffer, int len)
 {
-	char *return_ptr;
-	if (dest == NULL)
-	{
-		return (NULL);
-	}
-	return_ptr = dest;
-	while (*src != '\0')
-	{
-		*dest = *src;
-		dest++;
-		src++;
-	}
-	*dest = '\0';
-	return (return_ptr);
+    char *result;
+    char temp;
+    int i = 0;
+    int j = 0;
+
+    if (!buffer || len <= 0)
+        return NULL;
+    result = (char *)malloc(sizeof(char) * (len + 1));
+    if (!result) return NULL;
+    while (i < len)
+    {
+        result[i] = buffer[i];
+        i += 1;
+    }
+    result[i] = '\0';
+    while (i < BUFFER_SIZE && buffer[i] != '\0')
+    {
+        temp = buffer[i++];
+        buffer[j++] = temp;
+    }
+    while (j < BUFFER_SIZE)
+        buffer[j++] = '\0';
+    return (result);
 }

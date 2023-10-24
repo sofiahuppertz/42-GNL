@@ -2,9 +2,6 @@
 #include  <fcntl.h>
 #include <stdio.h>
 
-
-
-//tests for the get_next_line function.
 int	main(int argc, char *argv[])
 {
     int		fd;
@@ -16,7 +13,6 @@ int	main(int argc, char *argv[])
     fd = open(argv[1], O_RDONLY);
 
     i = 0;
-    printf("\n");
     while (1)
     {
         if(!(line = get_next_line(fd)))
