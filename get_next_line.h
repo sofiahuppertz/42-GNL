@@ -15,6 +15,7 @@
 
 # include <stdlib.h>
 # include <unistd.h>
+//# include "../Libft/headers/libft.h"
 
 # ifndef BUFFER_SIZE
 #  define BUFFER_SIZE 42
@@ -29,9 +30,9 @@ void 				add_last_node(t_node **head, char **string);
 void				free_list(t_node *head);
 int 				check_for_newline(char *buffer, t_node **head);
 int 				get_line_length(t_node *lines);
+int					get_next_line(int fd, char **line);
 char 				*copy_line(t_node *lines, int len);
 char 				*extract_from_buffer(char *buffer, int len);
-char				*get_next_line(int fd);
 
 # endif
 #endif

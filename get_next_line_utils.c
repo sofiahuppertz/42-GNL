@@ -1,7 +1,5 @@
 #include "get_next_line.h"
 
-
-
 int get_line_length(t_node *lines)
 {
     int i = 0;

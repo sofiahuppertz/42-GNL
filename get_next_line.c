@@ -12,16 +12,15 @@
 
 #include "get_next_line.h"
 
-char	*get_next_line(int fd)
+int	get_next_line(int fd, char **line)
 {
 	static char	buffer[BUFFER_SIZE];
-	char		*result = NULL;
 	t_node		*lines = NULL;
 	int			flag = 0;
 	int			len = 0;
 
-	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, 0, 0) < 0)
-		return (NULL);
+	if (line == NULL || fd < 0 || BUFFER_SIZE <= 0 || read(fd, 0, 0) < 0)
+		return (-1);
 	flag = 0;
 	lines = NULL;
 	if (buffer[0] && check_for_newline(buffer, &lines))
@@ -32,19 +31,20 @@ char	*get_next_line(int fd)
 		{
 			flag = 1;
 			if (!lines)
-				return (NULL);
+            {
+                ft_printf("  \b\b"); //erase the CTRL + D  
+                return (-2);
+            }
 		}
 		if (check_for_newline(buffer, &lines))
 			flag = 1;
 	}
 	len = get_line_length(lines);
 	if (len < 0)
-	{
-		return (NULL);
-	}
-	result = copy_line(lines, len);
-	free_list(lines);
-	return (result);
+		return (-1);
+	*line = copy_line(lines, len);
+	free_list(lines); 
+	return (1);
 }
 
 int check_for_newline(char *buffer, t_node **head)
